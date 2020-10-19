@@ -10,15 +10,22 @@ namespace Tron.Wallet
 
         private const int KEY_LENGTH_IN_BYTES = 32;
 
-        public PrivateKey(byte[] data, int offset = 0)
+        public PrivateKey(ReadOnlySpan<byte> data)
+        {
+            if (data.Length != KEY_LENGTH_IN_BYTES)
+                throw new ArgumentException($"Length of {nameof(data)} must be {KEY_LENGTH_IN_BYTES} bytes", nameof(data));
+
+            this.data = new byte[KEY_LENGTH_IN_BYTES];
+            data.CopyTo(this.data);
+            hashCode = ByteArrayEqualityComparer.Instance.GetHashCode(this.data);
+        }
+
+        public static PrivateKey FromByteArray(byte[] data, int offset = 0)
         {
             if (data.Length < offset + KEY_LENGTH_IN_BYTES)
                 throw new ArgumentException($"Length of {nameof(data)} must be at least {offset + KEY_LENGTH_IN_BYTES} bytes", nameof(data));
 
-            this.data = new byte[KEY_LENGTH_IN_BYTES];
-            Array.Copy(data, 0, this.data, offset, KEY_LENGTH_IN_BYTES);
-
-            hashCode = ByteArrayEqualityComparer.Instance.GetHashCode(this.data);
+            return new PrivateKey((new ReadOnlySpan<byte>(data, offset, KEY_LENGTH_IN_BYTES)));
         }
 
         public bool Equals(PrivateKey other)
