@@ -10,6 +10,8 @@ namespace Tron.Wallet
 
         private const int KEY_LENGTH_IN_BYTES = 32;
 
+        public ReadOnlySpan<byte> Data => data;
+
         public PrivateKey(ReadOnlySpan<byte> data)
         {
             if (data.Length != KEY_LENGTH_IN_BYTES)
