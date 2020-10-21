@@ -1,14 +1,16 @@
 using System;
 using Org.BouncyCastle.Asn1.X9;
 using Org.BouncyCastle.Crypto.EC;
+using Tron.Comparers;
 using Tron.Utilities;
 
 namespace Tron.Wallet
 {
-    public readonly struct PublicKey
+    public readonly struct PublicKey : IEquatable<PublicKey>
     {
         private readonly byte[] compressed;
         private readonly byte[] uncompressed;
+        private readonly int hashCode;
 
         private const int UNCOMPRESSED_LENGTH = 65;
         private const int COMPRESSED_LENGTH = 33;
@@ -38,6 +40,37 @@ namespace Tron.Wallet
             {
                 throw new ArgumentException($"Invalid public key length: {data.Length}", nameof(data));
             }
+
+            hashCode = ByteArrayEqualityComparer.Instance.GetHashCode(compressed);
+        }
+
+        public bool Equals(PublicKey other)
+        {
+            if (ReferenceEquals(other, null))
+                return false;
+            return ByteArrayEqualityComparer.Instance.Equals(compressed, other.compressed);
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(obj, null))
+                return false;
+            return obj is PublicKey other && Equals(other);
+        }
+
+        public override int GetHashCode()
+        {
+            return hashCode;
+        }
+
+        public static bool operator ==(PublicKey leftOperand, PublicKey rightOperand)
+        {
+            return leftOperand.Equals(rightOperand);
+        }
+
+        public static bool operator !=(PublicKey leftOperand, PublicKey rightOperand)
+        {
+            return !leftOperand.Equals(rightOperand);
         }
 
         private static byte[] Compress(byte[] data)
