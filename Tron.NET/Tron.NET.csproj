@@ -18,7 +18,7 @@
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageTags>tron;blockchain;sunstake</PackageTags>
     <IncludeSymbols>true</IncludeSymbols>
-    <SymbolPackageFormat>symbols.nupkg</SymbolPackageFormat>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <RepositoryUrl>https://github.com/SunStake/Tron.NET.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
   </PropertyGroup>
