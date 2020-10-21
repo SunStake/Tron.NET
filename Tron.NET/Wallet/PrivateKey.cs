@@ -17,8 +17,7 @@ namespace Tron.Wallet
             if (data.Length != KEY_LENGTH_IN_BYTES)
                 throw new ArgumentException($"Length of {nameof(data)} must be {KEY_LENGTH_IN_BYTES} bytes", nameof(data));
 
-            this.data = new byte[KEY_LENGTH_IN_BYTES];
-            data.CopyTo(this.data);
+            this.data = data.ToArray();
             hashCode = ByteArrayEqualityComparer.Instance.GetHashCode(this.data);
         }
 
