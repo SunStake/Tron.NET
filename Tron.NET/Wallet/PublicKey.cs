@@ -2,6 +2,7 @@ using System;
 using Org.BouncyCastle.Asn1.X9;
 using Org.BouncyCastle.Crypto.EC;
 using Tron.Comparers;
+using Tron.Helpers;
 using Tron.Utilities;
 
 namespace Tron.Wallet
@@ -42,6 +43,15 @@ namespace Tron.Wallet
             }
 
             hashCode = ByteArrayEqualityComparer.Instance.GetHashCode(compressed);
+        }
+
+        public Address ToAddress()
+        {
+            byte[] addressBytes = new byte[20];
+            byte[] keyHash = CryptoHelper.Keccak256(uncompressed, 1, 64);
+            Array.Copy(keyHash, 12, addressBytes, 0, 20);
+
+            return new Address(addressBytes);
         }
 
         public bool Equals(PublicKey other)
