@@ -1,4 +1,5 @@
 using System;
+using System.Security.Cryptography;
 using Org.BouncyCastle.Math;
 using Org.BouncyCastle.Asn1.X9;
 using Org.BouncyCastle.Crypto.EC;
@@ -34,6 +35,15 @@ namespace Tron.Wallet
                 throw new ArgumentException($"Length of {nameof(data)} must be at least {offset + KEY_LENGTH_IN_BYTES} bytes", nameof(data));
 
             return new PrivateKey((new ReadOnlySpan<byte>(data, offset, KEY_LENGTH_IN_BYTES)));
+        }
+
+        public static PrivateKey Random()
+        {
+            byte[] privKeyData = new byte[KEY_LENGTH_IN_BYTES];
+            using var rng = RandomNumberGenerator.Create();
+            rng.GetBytes(privKeyData);
+
+            return new PrivateKey(privKeyData);
         }
 
         public PublicKey ToPublicKey()
