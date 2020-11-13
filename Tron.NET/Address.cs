@@ -37,6 +37,15 @@ namespace Tron
             }
         }
 
+        public static Address FromBase58(string base58Address)
+        {
+            byte[] decodedBytes = base58CheckEncoder.DecodeData(base58Address);
+            if (decodedBytes.Length != ADDRESS_LENGTH_IN_BYTES)
+                throw new ArgumentException("Invalid address format", nameof(base58Address));
+
+            return new Address(decodedBytes);
+        }
+
         public string ToHexString(bool hexPrefix = true)
         {
             return HexUtilities.BytesToHex(addressBytes, hexPrefix);

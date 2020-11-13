@@ -43,5 +43,21 @@ namespace Tron.Tests
             // Without prefix
             Assert.Equal(addressWif, new Address(HexUtilities.HexToBytes(addressHex.Substring(2))).ToString());
         }
+
+        [Theory]
+        [InlineData("TV6iRCZvpFJU5Z6tb9WK2JDPzEYXUyShq6")]
+        [InlineData("TSTTungdsUMXYCSACRt4AFVhnEoX6gokpd")]
+        [InlineData("TK7issuVu1t4gdBgwXXjQdnFjcz1WUMK7s")]
+        [InlineData("TCjUZurvybkQVzX7u97YphDktpidMthJVs")]
+        [InlineData("TRo1prFYPm4tHR9NTEhtgYLNuye3RgXboC")]
+        [InlineData("TMgkUbaT8R7HKhFQoMbVFL7mggYBMF6sGh")]
+        [InlineData("TEhddV7ovcAsV4JPWsWGs55hSu1w8S34FM")]
+        [InlineData("TFQK44peZkat6TydzHYXxCSmqU89rumHpP")]
+        [InlineData("TCEx1LevkKY1Rem66Z7dy5JfQLfnYopx8A")]
+        [InlineData("TXGzXJCDt5pW8aNfgH4i6K1LurHydn5V9r")]
+        public void AddressFromBase58Test(string base58Address)
+        {
+            Assert.Equal(base58Address, Address.FromBase58(base58Address).ToString());
+        }
     }
 }
