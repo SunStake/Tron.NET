@@ -4,7 +4,7 @@ using System.Numerics;
 using Newtonsoft.Json;
 using Tron.Converters;
 
-namespace Tron.Rpc.Models
+namespace Tron.JsonRpc.Models
 {
     public class Account
     {

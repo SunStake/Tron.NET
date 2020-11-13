@@ -3,9 +3,9 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
-using Tron.Rpc.Models;
+using Tron.JsonRpc.Models;
 
-namespace Tron.Rpc
+namespace Tron.JsonRpc
 {
     public class JsonRpcClient
     {

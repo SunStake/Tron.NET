@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using Newtonsoft.Json;
 
-namespace Tron.Rpc.Models
+namespace Tron.JsonRpc.Models
 {
     public class Permission
     {
