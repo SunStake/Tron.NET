@@ -1,14 +1,14 @@
 using System;
 using NBitcoin.DataEncoders;
+using Tron.Utilities;
 
 namespace Tron
 {
     public readonly struct Address
     {
         private readonly byte[] addressBytes;
-        private readonly string addressWif;
 
-        private const int ADDRESS_LENGTH_IN_BYTES = 20;
+        private const int ADDRESS_LENGTH_IN_BYTES = 20 + 1;
         private const byte BASE58CHECK_PREFIX = 0x41;
 
         // This class should be thread-safe (not officially documented but based on source)
@@ -16,20 +16,39 @@ namespace Tron
 
         public Address(ReadOnlySpan<byte> addressBytes)
         {
-            if (addressBytes.Length != ADDRESS_LENGTH_IN_BYTES)
-                throw new ArgumentException($"Address bytes must be {ADDRESS_LENGTH_IN_BYTES} in length", nameof(addressBytes));
+            if (addressBytes.Length == ADDRESS_LENGTH_IN_BYTES)
+            {
+                // Prefix included
+                if (addressBytes[0] != BASE58CHECK_PREFIX)
+                    throw new ArgumentException("Invalid address prefix", nameof(addressBytes));
 
-            this.addressBytes = addressBytes.ToArray();
+                this.addressBytes = addressBytes.ToArray();
+            }
+            else if (addressBytes.Length == ADDRESS_LENGTH_IN_BYTES - 1)
+            {
+                // Prefix not included
+                this.addressBytes = new byte[ADDRESS_LENGTH_IN_BYTES];
+                this.addressBytes[0] = BASE58CHECK_PREFIX;
+                addressBytes.CopyTo(new Span<byte>(this.addressBytes, 1, ADDRESS_LENGTH_IN_BYTES - 1));
+            }
+            else
+            {
+                throw new ArgumentException("Invalid address bytes length", nameof(addressBytes));
+            }
+        }
 
-            byte[] base58Buffer = new byte[ADDRESS_LENGTH_IN_BYTES + 1];
-            base58Buffer[0] = BASE58CHECK_PREFIX;
-            Array.Copy(this.addressBytes, 0, base58Buffer, 1, ADDRESS_LENGTH_IN_BYTES);
-            this.addressWif = base58CheckEncoder.EncodeData(base58Buffer);
+        public string ToHexString(bool hexPrefix = true)
+        {
+            return HexUtilities.BytesToHex(addressBytes, hexPrefix);
         }
 
         public override string ToString()
         {
-            return addressWif;
+            byte[] base58Buffer = new byte[ADDRESS_LENGTH_IN_BYTES + 1];
+            base58Buffer[0] = BASE58CHECK_PREFIX;
+            Array.Copy(this.addressBytes, 0, base58Buffer, 1, ADDRESS_LENGTH_IN_BYTES);
+
+            return base58CheckEncoder.EncodeData(addressBytes);
         }
     }
 }
